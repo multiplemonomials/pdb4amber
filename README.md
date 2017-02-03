@@ -15,9 +15,9 @@ Install
 
 ```bash
 conda install ambertools -c ambermd
-conda install scipy
-conda install ipywidgets -c conda-forge 
-conda install nglview -c bioconda
+conda install scipy # minimization, optional
+conda install ipywidgets -c conda-forge # for nglview
+conda install nglview -c bioconda # visualization, optional
 pip install git+https://github.com/amber-md/pdb4amber
 ```
 
