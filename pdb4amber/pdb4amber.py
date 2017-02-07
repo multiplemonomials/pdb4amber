@@ -416,6 +416,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_logfile='pdb4amber.log',
         arg_keep_altlocs=False,
         arg_leap_template=False,
+        arg_conect=True,
         ):
 
     # always reset handlers to avoid duplication if run method is called more
@@ -571,7 +572,7 @@ def run(arg_pdbout, arg_pdbin,
                 oatom.altloc = ''
     if arg_pdbout in ['stdout', 'stderr'] or arg_pdbout.endswith('.pdb'):
         output = pdbfixer._write_pdb_to_stringio(cys_cys_atomidx_set=cys_cys_atomidx_set,
-                disulfide_conect=True,
+                disulfide_conect=arg_conect,
                 **write_kwargs)
         output.seek(0)
         if arg_pdbout in ['stdout', 'stderr']:
@@ -643,6 +644,8 @@ def main():
                         help="version")
     parser.add_argument("--leap-template", action='store_true', dest="leap_template",
                         help="write a leap template for easy adaption\n(EXPERIMENTAL)")
+    parser.add_argument("--no-conect", action='store_true', dest="no_conect",
+                        help="Not write S-S conect record")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
@@ -681,7 +684,8 @@ def main():
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
         arg_logfile=logfile,
-        arg_leap_template=opt.leap_template)
+        arg_leap_template=opt.leap_template,
+        arg_conect=not opt.no_conect)
 
 if __name__ == '__main__':
     main()
