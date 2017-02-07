@@ -83,6 +83,26 @@ def test_dry():
         water_parm = pmd.load_file('out_water.pdb')
         assert set(res.name for res in water_parm.residues) == {'HOH'}
 
+def test_not_write_sslink_conect_record():
+    pdb_out = 'out.pdb'
+    pdb_fn = get_fn('4lzt/4lzt_h.pdb')
+    sslink_name = 'out_sslink'
+
+    # has conect
+    with tempfolder():
+        command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out]
+        subprocess.check_call(command)
+        with open(pdb_out) as fh:
+            assert 'CONECT' in fh.read()
+
+    # no conect
+    with tempfolder():
+        command = ['pdb4amber', '-i', pdb_fn, '-o', pdb_out, '--no-conect']
+        subprocess.check_call(command)
+        with open(pdb_out) as fh:
+            assert 'CONECT' not in fh.read()
+
+
 def test_write_sslink():
     pdb_out = 'out.pdb'
     pdb_fn = get_fn('4lzt/4lzt_h.pdb')
