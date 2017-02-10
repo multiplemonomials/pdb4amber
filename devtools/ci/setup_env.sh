@@ -30,7 +30,7 @@ Country = travis
 EOF
 
 export SKIP_REGISTRATION=1
-conda install ambertools=16 -c ambermd -y
+conda install ambertools=17 -c hainm/label/dev -y
 conda install ipywidgets -c conda-forge -y
 conda install nglview -c bioconda -y
 
