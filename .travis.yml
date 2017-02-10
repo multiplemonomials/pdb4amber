@@ -3,7 +3,9 @@ language: cpp
 matrix:
   include:
      - { os: linux, env: PYTHON_VERSION=2.7 }
-     - { os: linux, env: PYTHON_VERSION=3.5 }
+     - { os: linux, env: PYTHON_VERSION=2.7 NO_SETUPTOOLS=True} # for amber
+     - { os: linux, env: PYTHON_VERSION=3.5 } 
+     - { os: linux, env: PYTHON_VERSION=3.6 }
 
 sudo: true
 dist: trusty
@@ -24,7 +26,11 @@ before_install:
     - source devtools/ci/install_parmed.sh # always install after AmberTools
 
 install:
-    - pip install . -v --upgrade # overwrite AmberTools
+    - if [ "$NO_SETUPTOOLS" = "True" ]; then \
+         python setup.py install --no-setuptools; \
+      else \
+         pip install . -v --upgrade; \
+      fi
 
 script:
     - reduce -Version
