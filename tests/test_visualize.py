@@ -7,8 +7,6 @@ import warnings
 warnings.filterwarnings('ignore')
 PY3 = sys.version_info[0] == 3
 
-from pdb4amber.visualizer import ViewerEditor
-
 from utils import get_fn
 
 try:
@@ -18,6 +16,7 @@ except ImportError:
     has_scipy = False
 
 try:
+    from pdb4amber.visualizer import ViewerEditor
     from ipywidgets import Widget
     from ipykernel.comm import Comm
     import nglview
