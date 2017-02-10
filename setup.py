@@ -4,10 +4,16 @@ import os
 import sys
 import pdb4amber
 
-from setuptools import setup
-kws = dict(entry_points={
-    'console_scripts' : ['pdb4amber = pdb4amber.pdb4amber:main'],
-})
+try:
+    sys.argv.remove('--no-setuptools')
+    from distutils.core import setup, Extension
+    kws = dict(scripts=[os.path.join('scripts', 'pdb4amber'),]
+    )
+except ValueError:
+    from setuptools import setup
+    kws = dict(entry_points={
+        'console_scripts' : ['pdb4amber = pdb4amber.pdb4amber:main'],
+    })
 
 setup(name='pdb4amber',
       version=pdb4amber.__version__,
