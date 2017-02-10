@@ -26,11 +26,7 @@ before_install:
     - source devtools/ci/install_parmed.sh # always install after AmberTools
 
 install:
-    - if [ "$NO_SETUPTOOLS" = "True" ]; then \
-         python setup.py install --no-setuptools; \
-      else \
-         pip install . -v --upgrade; \
-      fi
+    - source devtools/ci/install_pdb4amber.sh # always install after AmberTools
 
 script:
     - reduce -Version
