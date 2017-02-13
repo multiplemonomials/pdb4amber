@@ -21,10 +21,6 @@ conda install nglview -c bioconda # visualization, optional
 pip install git+https://github.com/amber-md/pdb4amber
 ```
 
-```bash
-python setup.py install
-```
-
 Usage
 -----
 ```bash
