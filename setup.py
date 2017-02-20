@@ -2,8 +2,10 @@
 
 import os
 import sys
-import pdb4amber
 
+
+# Note: Please update version in pdb4amber.__version__
+version='1.3'
 try:
     sys.argv.remove('--no-setuptools')
     from distutils.core import setup, Extension
@@ -16,7 +18,7 @@ except ValueError:
     })
 
 setup(name='pdb4amber',
-      version=pdb4amber.__version__,
+      version=version,
       zip_safe=False,
       description='PDB analyzer to prepare PDB files for Amber simulations.',
       author='Romain M. Wolf and AMBER developers',
