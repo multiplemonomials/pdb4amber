@@ -56,8 +56,8 @@ RESPROT = ('ALA', 'ARG', 'ASN', 'ASP',
            'CYX', 'ASH', 'GLH', 'LYH',
            'ACE', 'NME', 'GL4', 'AS4')
 
-RESNA = ('  C', '  G', '  U', '  A',
-         ' DC', ' DG', ' DT', ' DA')
+RESNA = ('C', 'G', 'U', 'A',
+         'DC', 'DG', 'DT', 'DA')
 
 RESSOLV = ('WAT', 'HOH',
            'AG', 'AL', 'Ag', 'BA', 'BR', 'Be', 'CA', 'CD',
