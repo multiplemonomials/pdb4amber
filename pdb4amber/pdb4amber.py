@@ -218,8 +218,8 @@ class AmberPDBFixer(object):
             gap = math.sqrt(dx * dx + dy * dy + dz * dz)
     
             if gap > 2.0:
-                gaprecord = (gap, C_atom.residue.name, C_atom.residue.idx+1,
-                                  N_atom.residue.name, N_atom.residue.idx+1)
+                gaprecord = (gap, C_atom.residue.name, C_atom.residue.idx,
+                                  N_atom.residue.name, N_atom.residue.idx)
                 gaplist.append(gaprecord)
                 ngaps += 1
     
