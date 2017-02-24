@@ -164,8 +164,8 @@ def test_writing_renum():
     pdb_out = 'out.pdb'
     command = ['pdb4amber', pdb_fn] 
     expected_lines = """
-MET     1    MET     0
-PRO     3    PRO     1
+MET     1    MET     1
+PRO     3    PRO     2
     """.strip().split('\n')
 
     with tempfolder():

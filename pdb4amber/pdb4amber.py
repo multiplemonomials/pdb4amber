@@ -342,7 +342,7 @@ class AmberPDBFixer(object):
             for residue in self.parm.residues:
                 fh.write("%3s %5s    %3s %5s\n" % 
                         (residue.name, residue.number,
-                         residue.name, residue.idx))
+                         residue.name, residue.idx+1))
 
     def _write_pdb_to_stringio(self, cys_cys_atomidx_set=None,
             disulfide_conect=True, **kwargs):
