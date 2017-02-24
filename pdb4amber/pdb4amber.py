@@ -226,8 +226,9 @@ class AmberPDBFixer(object):
         if ngaps > 0:
             logger.info("\n---------- Gaps (Renumbered Residues!)")
             cformat = "gap of %lf A between %s %d and %s %d"
-            for i, gaprecord in enumerate(gaplist):
-                logger.info(cformat % tuple(gaprecord))
+            for _, (d, resname0, resid0, resname1, resid1) in enumerate(gaplist):
+                # convert to 1-based
+                logger.info(cformat % (d, resname0, resid0+1, resname1, resid1+1))
         return gaplist
     
     
