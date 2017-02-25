@@ -218,16 +218,17 @@ class AmberPDBFixer(object):
             gap = math.sqrt(dx * dx + dy * dy + dz * dz)
     
             if gap > 2.0:
-                gaprecord = (gap, C_atom.residue.name, C_atom.residue.idx+1,
-                                  N_atom.residue.name, N_atom.residue.idx+1)
+                gaprecord = (gap, C_atom.residue.name, C_atom.residue.idx,
+                                  N_atom.residue.name, N_atom.residue.idx)
                 gaplist.append(gaprecord)
                 ngaps += 1
     
         if ngaps > 0:
             logger.info("\n---------- Gaps (Renumbered Residues!)")
             cformat = "gap of %lf A between %s %d and %s %d"
-            for i, gaprecord in enumerate(gaplist):
-                logger.info(cformat % tuple(gaprecord))
+            for _, (d, resname0, resid0, resname1, resid1) in enumerate(gaplist):
+                # convert to 1-based
+                logger.info(cformat % (d, resname0, resid0+1, resname1, resid1+1))
         return gaplist
     
     

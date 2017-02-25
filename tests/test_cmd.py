@@ -333,6 +333,19 @@ def test_keep_altlocs():
             if atom.name.startswith('CB') or atom.name.startswith('CG'):
                 assert atom.other_locations
 
+def test_find_gaps():
+    expected_line = 'gap of 4.134579 A between MET 1 and PRO 2'
+    pdb_fh = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fh)
+    parm_gap = parm[':1,3']
+    with tempfolder():
+        fn = 'gap.pdb'
+        parm_gap.save(fn)
+        # remove TER to have gap
+        subprocess.check_call('cat {} | sed "/TER/d" > new1.pdb'.format(fn), shell=True)
+        output = subprocess.check_output(['pdb4amber', 'new1.pdb', '--logfile=stdout']).decode()
+        assert expected_line in output
+
 def test_increase_code_coverage_for_small_stuff():
     with pytest.raises(RuntimeError):
         pdb4amber.run('fake.pdb', 'fake.pdb')
