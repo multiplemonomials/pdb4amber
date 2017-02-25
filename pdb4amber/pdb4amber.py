@@ -355,11 +355,6 @@ class AmberPDBFixer(object):
         stringio_file.seek(0)
         lines = stringio_file.readlines()
 
-        if noter:
-            for line in lines:
-                if line.startswith("TER"):
-                    lines.remove(line)
-
         # TODO: update ParmEd?
         if disulfide_conect:
             conect_record = [
@@ -368,10 +363,15 @@ class AmberPDBFixer(object):
             ]
             conect_str = ''.join(conect_record)
             lines[-1] = conect_str + 'END\n'
-            stringio_file_out.writelines(lines)
-            stringio_file_out.seek(0)
-            stringio_file = stringio_file_out
-        return stringio_file
+
+        if noter:
+            for line in lines:
+                if line.startswith("TER"):
+                    lines.remove(line)
+
+        stringio_file_out.writelines(lines)
+        stringio_file_out.seek(0)
+        return stringio_file_out
 
     def remove_water(self):
         ''' Remove waters and return new `parm` with only waters
