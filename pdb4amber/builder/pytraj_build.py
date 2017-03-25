@@ -5,12 +5,8 @@ from . import leap
 from ..utils import tempfolder
 from . import nab
 
-__all__ = [
-        'build_protein',
-        'build_adna',
-        'build_bdna',
-        'build_arna'
-]
+__all__ = ['build_protein', 'build_adna', 'build_bdna', 'build_arna']
+
 
 def build_protein(seq, command=None):
     '''
@@ -53,7 +49,7 @@ def build_protein(seq, command=None):
     command_str = ' '.join(command) if isinstance(command, list) else command
 
     amberhome = os.getenv('AMBERHOME', '')
-    if  os.path.exists(amberhome + '/dat/leap/cmd/leaprc.ff14SB'):
+    if os.path.exists(amberhome + '/dat/leap/cmd/leaprc.ff14SB'):
         leap_command = leap_command.replace('protein.ff14SB', 'ff14SB')
 
     with tempfolder():
@@ -64,6 +60,7 @@ def build_protein(seq, command=None):
         traj.save(pdb_out, overwrite=True)
         return parmed.load_file(pdb_out)
 
+
 def solvate(parm, buffer=8.):
     pdb_out = 'my.pdb'
     leap_command = """
@@ -73,7 +70,8 @@ def solvate(parm, buffer=8.):
     solvateOct pdb TIP3PBOX {buffer}
     savepdb pdb {input_pdb}
     quit
-    """.format(input_pdb=pdb_out, buffer=buffer)
+    """.format(
+        input_pdb=pdb_out, buffer=buffer)
 
     with tempfolder():
         parm.save(pdb_out, overwrite=True)
@@ -91,11 +89,14 @@ def _nab_build(seq, filename, nuc_type='abdna'):
         nab.run(command)
         return parmed.load_file(filename)
 
+
 def build_adna(seq, filename='nuc.pdb'):
     return _nab_build(seq, filename=filename, nuc_type='adna')
 
+
 def build_bdna(seq, filename='nuc.pdb'):
     return _nab_build(seq, filename=filename, nuc_type='abdna')
+
 
 def build_arna(seq, filename='nuc.pdb'):
     return _nab_build(seq, filename=filename, nuc_type='arna')

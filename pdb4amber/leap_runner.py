@@ -4,10 +4,13 @@ from .template import default_force_field, leap_template
 from .utils import easy_call
 
 
-def _make_leap_template(parm, ns_names, gaplist, sslist,
-        input_pdb,
-        prmtop='prmtop',
-        rst7='rst7'):
+def _make_leap_template(parm,
+                        ns_names,
+                        gaplist,
+                        sslist,
+                        input_pdb,
+                        prmtop='prmtop',
+                        rst7='rst7'):
     # box
     box = parm.box
     if box is not None:
@@ -43,6 +46,7 @@ def _make_leap_template(parm, ns_names, gaplist, sslist,
         more_leap_cmds=more_leap_cmds)
     return leap_string
 
+
 def run_tleap(parm, ns_names, gaplist, sslist, leap_input=None):
     # adapted from amber_adaptbx code in phenix
     '''
@@ -65,14 +69,17 @@ def run_tleap(parm, ns_names, gaplist, sslist, leap_input=None):
     f = open(tleap_input_file, "w")
 
     if leap_input is None:
-        leap_string = _make_leap_template(parm, ns_names, gaplist, sslist,
-                input_pdb=input_pdb,
-                prmtop=prmtop,
-                rst7=rst7)
+        leap_string = _make_leap_template(
+            parm,
+            ns_names,
+            gaplist,
+            sslist,
+            input_pdb=input_pdb,
+            prmtop=prmtop,
+            rst7=rst7)
     else:
-        leap_string = leap_input.format(input_pdb=input_pdb,
-                prmtop=prmtop,
-                rst7=rst7)
+        leap_string = leap_input.format(
+            input_pdb=input_pdb, prmtop=prmtop, rst7=rst7)
     f.write(leap_string)
     f.close()
 

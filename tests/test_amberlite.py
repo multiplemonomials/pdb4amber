@@ -22,19 +22,24 @@ pdb4amber -i 2mpi.pdb -o 2mpi_amber_model.pdb --model 2
 # pdb_pairs : List[[orig_pdb, expected_pdb]]
 pdb_pairs = []
 for line in commands:
-    pdb_pairs.append([fn for fn in line.split() if fn.endswith('.pdb') and line])
+    pdb_pairs.append(
+        [fn for fn in line.split() if fn.endswith('.pdb') and line])
 
-func_inputs = [tuple([command, ] + [pdb_in, pdb_out]) for command, (pdb_in, pdb_out)
-        in zip(commands, pdb_pairs)]
+func_inputs = [
+    tuple([
+        command,
+    ] + [pdb_in, pdb_out])
+    for command, (pdb_in, pdb_out) in zip(commands, pdb_pairs)
+]
 
-@pytest.mark.parametrize('command, pdb_in, pdb_out', func_inputs
-)
+
+@pytest.mark.parametrize('command, pdb_in, pdb_out', func_inputs)
 def test_amberlite(command, pdb_in, pdb_out):
     saved_pdb_fn_abspath = get_fn('amberlite/' + pdb_out + '.save')
     pdb_in_abspath = get_fn('amberlite/' + pdb_in)
     with tempfolder():
         command = command.replace(pdb_in, pdb_in_abspath)
-        subprocess.check_call(command, shell=True) 
+        subprocess.check_call(command, shell=True)
         if 'reduce' in pdb_out:
             # e.g: pdb4amber --reduce < 3ptb.pdb > 3ptb_amber_reduce_stdin.pdb
             # Not sure why getting diff error for spacing, ack

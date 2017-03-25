@@ -3,6 +3,7 @@ import parmed
 from .leapify import Leapify
 from .utils import tempfolder, which, easy_call
 
+
 class AmberBuilder(Leapify):
     ''' Require many programs in AmberTools (pytraj, tleap, nab, ...)
 
@@ -53,8 +54,10 @@ class AmberBuilder(Leapify):
             self.parm.save(inp_pdb)
             out = easy_call([
                 UnitCell,
-                '-p', inp_pdb,
-                '-o', out_pdb,
+                '-p',
+                inp_pdb,
+                '-o',
+                out_pdb,
             ])
             self.parm = parmed.load_file(out_pdb)
 
@@ -87,10 +90,15 @@ class AmberBuilder(Leapify):
             self.parm.save(inp_pdb)
             out = easy_call([
                 PropPDB,
-                '-p', inp_pdb,
-                '-ix', x,
-                '-iy', y,
-                '-iz', z,
-                '-o', out_pdb,
+                '-p',
+                inp_pdb,
+                '-ix',
+                x,
+                '-iy',
+                y,
+                '-iz',
+                z,
+                '-o',
+                out_pdb,
             ])
             self.parm = parmed.load_file(out_pdb)

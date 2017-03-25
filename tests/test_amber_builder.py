@@ -12,8 +12,9 @@ try:
 except ImportError:
     pytraj = None
 
+
 def _compute_major_groove(builder):
-    with  tempfolder():
+    with tempfolder():
         pdb_out = 'out.pdb'
         builder.write_pdb(pdb_out)
         traj = pytraj.load(pdb_out)
@@ -29,20 +30,22 @@ def test_solvate():
     builder.solvate()
     assert len(builder.parm.atoms) == 1092
 
+
 @unittest.skipUnless(pytraj is not None, "require pytraj")
 def test_build_nuleic_acid():
     builder = AmberBuilder()
     builder.build_bdna('GGGGGG')
-    aa_eq(_compute_major_groove(builder), [ 17.24558067])
-    aa_eq(_compute_major_groove(builder.build_adna('GGGGGG')), [ 15.72079277])
+    aa_eq(_compute_major_groove(builder), [17.24558067])
+    aa_eq(_compute_major_groove(builder.build_adna('GGGGGG')), [15.72079277])
 
     # build_xxx will repalce old structure
-    aa_eq(_compute_major_groove(builder.build_arna('GGGGGG')), [ 15.18226528])
+    aa_eq(_compute_major_groove(builder.build_arna('GGGGGG')), [15.18226528])
     with tempfolder():
         pdb_out = 'out.pdb'
         builder.write_pdb(pdb_out)
         with open(pdb_out) as fh:
             assert "O2'" in fh.read()
+
 
 def test_build_unitcell():
     pdb_fn = get_fn('2igd/2igd.pdb')
@@ -62,6 +65,7 @@ def test_build_unitcell():
         parm2.symmetry = None
         builder2 = AmberBuilder(parm2)
         builder2.build_unitcell()
+
 
 def test_prob_pdb():
     pdb_fn = get_fn('2igd/2igd.pdb')

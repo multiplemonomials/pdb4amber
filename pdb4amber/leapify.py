@@ -4,7 +4,6 @@ from .leap_runner import run_tleap
 
 
 class Leapify(AmberPDBFixer):
-
     def minimize(self, **kwargs):
         ''' port ParmED'minimize function
 
@@ -37,8 +36,9 @@ class Leapify(AmberPDBFixer):
 
     def leapify(self, *args, **kwargs):
         with tempfolder():
-            ns_names = self.find_non_starndard_resnames() if self.parm is not None else []
+            ns_names = self.find_non_starndard_resnames(
+            ) if self.parm is not None else []
             gaplist = self.find_gaps() if self.parm is not None else []
             sslist, _ = self.find_disulfide() if self.parm is not None else []
-            self.parm = run_tleap(self.parm, ns_names, gaplist, sslist,
-                    *args, **kwargs)
+            self.parm = run_tleap(self.parm, ns_names, gaplist, sslist, *args,
+                                  **kwargs)
