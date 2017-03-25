@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import unittest
 import parmed as pmd
@@ -345,6 +346,48 @@ def test_find_gaps():
         subprocess.check_call('cat {} | sed "/TER/d" > new1.pdb'.format(fn), shell=True)
         output = subprocess.check_output(['pdb4amber', 'new1.pdb', '--logfile=stdout']).decode()
         assert expected_line in output
+
+def get_num_ters(fn):
+    with open(fn) as fh:
+        num_ters = 0
+        for line in fh:
+            if line.startswith("TER"):
+                num_ters += 1
+    return num_ters
+
+
+def test_noter():
+    pdb_fh = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fh)
+    parm_gap = parm[':1,3']
+
+    with tempfolder():
+        fn = 'gap.pdb'
+        noter_fn = 'noter.pdb'
+        parm_gap.save(fn)
+        assert get_num_ters(fn) == 2
+        output = subprocess.check_output(['pdb4amber', fn, '--noter', '-o', noter_fn])
+        assert get_num_ters(noter_fn) == 0
+
+def test_noter_using_run_method():
+    pdb_fh = get_fn('2igd/2igd.pdb')
+    parm = pmd.load_file(pdb_fh)
+    parm_gap = parm[':1,3']
+
+    with tempfolder():
+        fn = 'gap.pdb'
+        noter_fn = 'noter.pdb'
+        parm_gap.save(fn)
+        assert get_num_ters(fn) == 2
+        pdb4amber.run(noter_fn,
+                      fn,
+                      arg_elbow=True,
+                      arg_reduce=False,
+                      arg_logfile=sys.stderr,
+                      arg_conect=False,
+                      arg_noter=True,
+                      )
+        assert get_num_ters(noter_fn) == 0
 
 def test_increase_code_coverage_for_small_stuff():
     with pytest.raises(RuntimeError):

@@ -346,7 +346,9 @@ class AmberPDBFixer(object):
                          residue.name, residue.idx+1))
 
     def _write_pdb_to_stringio(self, cys_cys_atomidx_set=None,
-            disulfide_conect=True, **kwargs):
+            disulfide_conect=True,
+            noter=False,
+            **kwargs):
         stringio_file = StringIO()
         stringio_file_out = StringIO()
         self.parm.write_pdb(stringio_file, **kwargs)
@@ -361,10 +363,15 @@ class AmberPDBFixer(object):
             ]
             conect_str = ''.join(conect_record)
             lines[-1] = conect_str + 'END\n'
-            stringio_file_out.writelines(lines)
-            stringio_file_out.seek(0)
-            stringio_file = stringio_file_out
-        return stringio_file
+
+        if noter:
+            for line in lines:
+                if line.startswith("TER"):
+                    lines.remove(line)
+
+        stringio_file_out.writelines(lines)
+        stringio_file_out.seek(0)
+        return stringio_file_out
 
     def remove_water(self):
         ''' Remove waters and return new `parm` with only waters
@@ -418,6 +425,7 @@ def run(arg_pdbout, arg_pdbin,
         arg_keep_altlocs=False,
         arg_leap_template=False,
         arg_conect=True,
+        arg_noter=False,
         ):
 
     # always reset handlers to avoid duplication if run method is called more
@@ -574,6 +582,7 @@ def run(arg_pdbout, arg_pdbin,
     if arg_pdbout in ['stdout', 'stderr'] or arg_pdbout.endswith('.pdb'):
         output = pdbfixer._write_pdb_to_stringio(cys_cys_atomidx_set=cys_cys_atomidx_set,
                 disulfide_conect=arg_conect,
+                noter=arg_noter,
                 **write_kwargs)
         output.seek(0)
         if arg_pdbout in ['stdout', 'stderr']:
@@ -647,6 +656,8 @@ def main():
                         help="write a leap template for easy adaption\n(EXPERIMENTAL)")
     parser.add_argument("--no-conect", action='store_true', dest="no_conect",
                         help="Not write S-S conect record")
+    parser.add_argument("--noter", action='store_true', dest="noter",
+                        help="Not writing TER")
     opt = parser.parse_args()
 
     # pdbin : {str, file object, parmed.Structure}
@@ -686,7 +697,8 @@ def main():
         arg_add_missing_atoms=opt.add_missing_atoms,
         arg_logfile=logfile,
         arg_leap_template=opt.leap_template,
-        arg_conect=not opt.no_conect)
+        arg_conect=not opt.no_conect,
+        arg_noter=opt.noter)
 
 if __name__ == '__main__':
     main()
