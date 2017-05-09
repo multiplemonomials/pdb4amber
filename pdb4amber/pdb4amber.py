@@ -285,7 +285,7 @@ class AmberPDBFixer(object):
                 ns_names.add(rname)
         return ns_names
 
-    def add_hydrogen(self):
+    def add_hydrogen(self, no_reduce_db=False):
         ''' Use reduce program to add hydrogen
     
         Parameters
@@ -300,18 +300,35 @@ class AmberPDBFixer(object):
         --------
         reduce
         '''
+
+        def touch(fname, times=None):
+            with open(fname, 'a'):
+                os.utime(fname, times)
+
         try:
+            if (no_reduce_db):
+                touch('./dummydb')
             fileobj = StringIO()
             self.write_pdb(fileobj)
             fileobj.seek(0)
             reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            process = subprocess.Popen(
-                [reduce, '-BUILD', '-NUC', '-NOFLIP', '-'],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+            if (no_reduce_db):
+                process = subprocess.Popen(
+                    [
+                        reduce, '-BUILD', '-NUC', '-NOFLIP', '-DB ./dummydb',
+                        '-'
+                    ],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+            else:
+                process = subprocess.Popen(
+                    [reduce, '-BUILD', '-NUC', '-NOFLIP', '-'],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
             out, err = process.communicate(str.encode(fileobj.read()))
             out = out.decode()
             err = err.decode()
@@ -328,6 +345,8 @@ class AmberPDBFixer(object):
             self.parm = parmed.read_PDB(pdbh)
         finally:
             fileobj.close()
+            if (no_reduce_db):
+                os.unlink('./dummydb')
         return self
 
     def visualize(self):
@@ -362,6 +381,11 @@ class AmberPDBFixer(object):
         self.parm.write_pdb(stringio_file, **kwargs)
         stringio_file.seek(0)
         lines = stringio_file.readlines()
+
+        if noter:
+            for line in lines:
+                if line.startswith("TER"):
+                    lines.remove(line)
 
         # TODO: update ParmEd?
         if disulfide_conect:
@@ -428,6 +452,7 @@ def run(
         arg_constph=False,
         arg_mostpop=False,
         arg_reduce=False,
+        arg_no_reduce_db=False,
         arg_model=0,
         arg_add_missing_atoms=False,
         arg_elbow=False,
@@ -483,7 +508,7 @@ def run(
     pdbfixer._write_renum(base_filename)
 
     if arg_reduce:
-        pdbfixer.add_hydrogen()
+        pdbfixer.add_hydrogen(no_reduce_db=arg_no_reduce_db)
 
     sumdict = pdbfixer._summary()
 
@@ -548,7 +573,7 @@ def run(
         # mutation will remove all hydrogens
         # add back if using reduce
         if arg_reduce:
-            pdbfixer.add_hydrogen()
+            pdbfixer.add_hydrogen(no_reduce_db=arg_no_reduce_db)
 
     # count heavy atoms:==================================================
     missing_atom_residues = pdbfixer.find_missing_heavy_atoms()
@@ -696,6 +721,11 @@ def main():
         dest="reduce",
         help="Run Reduce first to add hydrogens.  (default: no)")
     parser.add_argument(
+        "--no-reduce-db",
+        action="store_true",
+        dest="no_reduce_db",
+        help="If reduce is on, skip using it for hetatoms.  (default: no)")
+    parser.add_argument(
         "--pdbid",
         action="store_true",
         dest="pdbid",
@@ -771,6 +801,7 @@ def main():
         arg_constph=opt.constantph,
         arg_mostpop=opt.mostpop,
         arg_reduce=opt.reduce,
+        arg_no_reduce_db=opt.no_reduce_db,
         arg_model=opt.model - 1,
         arg_keep_altlocs=opt.keep_altlocs,
         arg_add_missing_atoms=opt.add_missing_atoms,
