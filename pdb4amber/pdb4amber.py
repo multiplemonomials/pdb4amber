@@ -306,7 +306,7 @@ class AmberPDBFixer(object):
                 os.utime(fname, times)
 
         try:
-            if (no_reduce_db):
+            if no_reduce_db:
                 touch('./dummydb')
             fileobj = StringIO()
             self.write_pdb(fileobj)
@@ -314,7 +314,7 @@ class AmberPDBFixer(object):
             reduce = os.path.join(os.getenv('AMBERHOME', ''), 'bin', 'reduce')
             if not os.path.exists(reduce):
                 reduce = 'reduce'
-            if (no_reduce_db):
+            if no_reduce_db:
                 process = subprocess.Popen(
                     [
                         reduce, '-BUILD', '-NUC', '-NOFLIP', '-DB ./dummydb',
@@ -335,17 +335,15 @@ class AmberPDBFixer(object):
             if process.wait():
                 logger.error("REDUCE returned non-zero exit status: "
                              "See reduce_info.log for more details")
-                with open('reduce_info.log', 'w') as fh:
-                    fh.write(err)
             # print out the reduce log even if it worked
-            else:
-                open('reduce_info.log', 'w').write(err)
+            with open('reduce_info.log', 'w') as fh:
+                fh.write(err)
             pdbh = StringIO(out)
             # not using load_file since it does not read StringIO
             self.parm = parmed.read_PDB(pdbh)
         finally:
             fileobj.close()
-            if (no_reduce_db):
+            if no_reduce_db:
                 os.unlink('./dummydb')
         return self
 
@@ -655,39 +653,39 @@ def main():
     parser.add_argument(
         "input",
         nargs='?',
-        help="PDB input file                      (default: stdin)", )
+        help="PDB input file (default: stdin)", )
     parser.add_argument(
         "-i",
         "--in",
         metavar="FILE",
         dest="pdbin",
-        help="PDB input file                      (default: stdin)",
+        help="PDB input file (default: stdin)",
         default='stdin')
     parser.add_argument(
         "-o",
         "--out",
         metavar="FILE",
         dest="pdbout",
-        help="PDB output file                     (default: stdout)",
+        help="PDB output file (default: stdout)",
         default='stdout')
     parser.add_argument(
         "-y",
         "--nohyd",
         action="store_true",
         dest="nohyd",
-        help="remove all hydrogen atoms           (default: no)")
+        help="remove all hydrogen atoms (default: no)")
     parser.add_argument(
         "-d",
         "--dry",
         action="store_true",
         dest="dry",
-        help="remove all water molecules          (default: no)")
+        help="remove all water molecules (default: no)")
     parser.add_argument(
         "-s",
         "--strip",
         dest="strip_atom_mask",
         default=None,
-        help="Strip given atom mask,              (default: no)")
+        help="Strip given atom mask, (default: no)")
     parser.add_argument(
         "-m",
         "--mutate",
