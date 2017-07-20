@@ -4,7 +4,7 @@ import os
 import sys
 
 # Note: Please update version in pdb4amber.__version__
-version = '1.3'
+version = '1.4'
 try:
     sys.argv.remove('--no-setuptools')
     from distutils.core import setup, Extension
