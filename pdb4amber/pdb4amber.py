@@ -28,7 +28,7 @@ from .residue import (
 
 from .utils import tempfolder, amberbin
 
-__version__ = '1.3'
+__version__ = '1.4.1'
 
 
 class AmberPDBFixer(object):

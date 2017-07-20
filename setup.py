@@ -2,20 +2,13 @@
 
 import os
 import sys
+from setuptools import setup
 
 # Note: Please update version in pdb4amber.__version__
-version = '1.4'
-try:
-    sys.argv.remove('--no-setuptools')
-    from distutils.core import setup, Extension
-    kws = dict(scripts=[
-        os.path.join('scripts', 'pdb4amber'),
-    ])
-except ValueError:
-    from setuptools import setup
-    kws = dict(entry_points={
-        'console_scripts': ['pdb4amber = pdb4amber.pdb4amber:main'],
-    })
+version = '1.4.1'
+kws = dict(entry_points={
+    'console_scripts': ['pdb4amber = pdb4amber.pdb4amber:main'],
+})
 
 setup(
     name='pdb4amber',
