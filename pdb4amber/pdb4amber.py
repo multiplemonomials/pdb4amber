@@ -722,7 +722,7 @@ def main():
         "--no-reduce-db",
         action="store_true",
         dest="no_reduce_db",
-        help="If reduce is on, skip using it for hetatoms.  (default: no)")
+        help="If reduce is on, skip using it for hetatoms.  (default: usual reduce behavior for hetatoms)")
     parser.add_argument(
         "--pdbid",
         action="store_true",
